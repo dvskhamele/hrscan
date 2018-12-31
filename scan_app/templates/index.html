@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container" style="margin-top:80px;">
+  <div class="row">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6" style="margin-top:20px;">
+      <form id="uploadform" action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card border-secondary">
+          <div class="card-body">
+            <h4 class="card-title">Upload CV</h4>
+            <hr/>
+            <div class="form-group">
+              <label for="">Your name</label>
+              <input type="text" class="form-control" required placeholder="Enter name here..." name="cname" />
+            </div>
+          <!--  <div class="form-group">
+              <label for="">How much experience you have</label>
+               <select class="form-control" required name="experience">
+                <option value="0">0 Year</option>
+                <option value="1">1 Year</option>
+                <option value="2">2 Year</option>
+                <option value="3">3 Year</option>
+                <option value="4">4 Year</option>
+                <option value="5">5 Year</option>
+                <option value="6">6 Year</option>
+              </select>
+            </div>-->
+            <div class="form-group">
+              <label for="">Upload your CV</label>
+              <input type="file" id="cv" style="padding:3px;" required class="form-control" name="usercv" />
+              <span id="cv_info" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+              <input type="submit" name="submit" class="btn btn-secondary" value="Submit">
+              <input type="reset" class="btn btn-danger" value="Clear">
+              <p style="margin-top:5px;" class="text-danger">{{request.session.status}}</p>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+  $('#uploadform').submit(function(){
+    var ext = $('#cv').val().split('.').pop().toLowerCase();
+    if($.inArray(ext, ['pdf','doc','docx']) == -1) {
+      $('#cv').val('');
+      $("#cv_info").text('only pdf, doc, docx files can be uploaded.');
+      return false;
+    }else{
+      return true;
+    }
+
+  });
+</script>
+{% endblock %}
