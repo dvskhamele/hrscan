@@ -112,5 +112,6 @@ def clgCombination(collegeObj):
 
 		possible_combinations = list(set(possible_combinations))
 		ranking_of_college[int(clg.clg_rank)] = possible_combinations
-
+		#with open('college.txt','w') as s:
+		#	s.write(str(ranking_of_college));
 	return ranking_of_college

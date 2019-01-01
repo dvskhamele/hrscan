@@ -89,6 +89,11 @@ def processCV(request):
     response = json.dumps({'collegeRank': collegerank, 'degreeRank': degreerank, 'keywordRank':keywordrank})
     return HttpResponse(response)
 
+def addKW(request, kw=None):
+    if kw!=None:
+        cv = CVKeywords.objects.create(k_value=kw)
+        cv.save()
+        return HttpResponse('saved')
 
 class CreateApplicantCollege(generics.CreateAPIView):
     queryset = ApplicantCollege.objects.all()

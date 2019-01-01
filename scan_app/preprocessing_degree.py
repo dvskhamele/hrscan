@@ -32,4 +32,6 @@ def degreeCombination(degreeObj):
 			ranking_of_degree[int(degree_rank)] = possible_combination
 		except:
 			pass
+		#with open('degree.txt','w') as s:
+		#	s.write(str(ranking_of_degree));
 	return ranking_of_degree

@@ -9,9 +9,10 @@ urlpatterns = [
     path('login/', views.user_login, name='login'),
     path('user_logout/', views.user_logout, name="logout"),
     path('adminpanel/', views.adminpanel, name='adminpanel'),
+    path('adminpanel/addkeywords/<str:kw>', views.addKW),
     #path('adminpanel/api/v1/addcollege', views.CreateApplicantCollege.as_view()),
     #path('adminpanel/api/v1/addcdegree', views.CreateApplicantDegree.as_view()),
-    #path('adminpanel/api/v1/addkeywords', views.CreateCVKeywords.as_view()),
+    path('adminpanel/api/v1/addkeywords', views.CreateCVKeywords.as_view()),
     path('adminpanel/api/v1/processcv', views.processCV),
 ]
 
