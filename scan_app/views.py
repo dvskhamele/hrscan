@@ -77,6 +77,8 @@ def processCV(request):
     applicant_cv = ApplicantCV.objects.all()
     cv_keywords = CVKeywords.objects.all()
     neg_keywords = Neg_keywords.objects.all()
+    college_count = ApplicantCollege.objects.count();
+    degree_count = ApplicantDegree.objects.count();
 
     clg = clgCombination(college)
     deg = degreeCombination(degree)
@@ -86,7 +88,13 @@ def processCV(request):
     degreerank = degreeRank(deg, applicant_cv, clean_text)
     keywordrank = keywordRank(applicant_cv, cv_keywords, clean_text, neg_keywords)
     #keywordrank = 0
-    response = json.dumps({'collegeRank': collegerank, 'degreeRank': degreerank, 'keywordRank':keywordrank})
+    response = json.dumps({
+        'collegeRank': collegerank,
+        'degreeRank': degreerank,
+        'keywordRank':keywordrank,
+        'college_count': college_count,
+        'degree_count': degree_count
+    })
     return HttpResponse(response)
 
 def addKW(request, kw=None):
