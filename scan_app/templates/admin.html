@@ -184,7 +184,7 @@
 {% block script %}
 <script>
   var devDpmain = "http://127.0.0.1:8000";
-    var proDomain = "http://ec2-13-233-0-31.ap-south-1.compute.amazonaws.com:9001";
+    var proDomain = "htdtp://ec2-13-233-0-31.ap-south-1.compute.amazonaws.com:9001";
   $('#addkey').click(function(){
     $(this).hide();
     $('#newkey').show();
@@ -207,7 +207,14 @@
           kw.val("");
           kw.hide();
           $('#addkey').show();
+        }).fail(function(){
+          alert('Server error');
+          kw.val("");
+          kw.hide();
+          $('#addkey').show();
         });
+
+        
       }
     }
   });
@@ -320,6 +327,10 @@
       });
     //  console.log(grandArr);
     //exportTableToExcel('overall', 'CVResults');
+    }).fail(function(){
+      alert('Server error try again after some time.');
+      $('.loader').hide();
+      $('#process').show();
     });
 
     var sortJSON = function sortJSON(data, key, way) {
