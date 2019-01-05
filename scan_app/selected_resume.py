@@ -29,15 +29,19 @@ def textClean(applicant_cv):
     text_in_resume = []
     i = 1
     for cv in applicant_cv:
-        data = docx2txt.process(cv.applicant_cv)
-        degg = checkDegree(data)
-        data = TextBlob(data.lower()).words
-        lemmatized_data = [lem.lemmatize(i, pos=wordnet.ADJ) for i in data]
-        s = ""
-        for ii in lemmatized_data:
-        	s+=ii+' '
-        text_in_resume.append(s)
-        i+=1
+        try:
+            data = docx2txt.process(cv.applicant_cv)
+            degg = checkDegree(data)
+            data = TextBlob(data.lower()).words
+            lemmatized_data = [lem.lemmatize(i, pos=wordnet.ADJ) for i in data]
+            s = ""
+            for ii in lemmatized_data:
+            	s+=ii+' '
+            text_in_resume.append(s)
+            i+=1
+        except:
+            pass
+
     clean_text=[]
     for i in text_in_resume:
         ct = i.lower()
@@ -189,7 +193,7 @@ def keywordRank(applicant_cv, cv_keywords, clean_text, neg_keywords):
         for key in similar_keywords:
             if key in text and key not in neg_key:
                 count += 1
-                keys.append(key+" ")
+                keys.append(" "+key)
                 #print('cv',i,key)
         rank_resume_by_keywords.append({applicant_cv[i].applicant_name:(count/len_keywords), 'keywords': keys, 'keywordsCount': len(keys)})
         i += 1
