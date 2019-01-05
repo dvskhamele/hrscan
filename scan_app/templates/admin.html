@@ -183,6 +183,8 @@
 {% endblock %}
 {% block script %}
 <script>
+  var devDpmain = "http://127.0.0.1:8000";
+    var proDomain = "http://ec2-13-233-0-31.ap-south-1.compute.amazonaws.com:9001";
   $('#addkey').click(function(){
     $(this).hide();
     $('#newkey').show();
@@ -199,7 +201,7 @@
     if(e.keyCode==13){
       var kw = $('#newkey');
       if(kw.val().length>1){
-        $.get('http://ec2-13-233-0-31.ap-south-1.compute.amazonaws.com:9001/adminpanel/addkeywords/'+kw.val(), function(data){
+        $.get(proDomain+'/adminpanel/addkeywords/'+kw.val(), function(data){
           console.log(data);
           $("#keydata").prepend('<button class="btn btn-secondary" style="margin-bottom:3px;">'+kw.val()+'</button>');
           kw.val("");
@@ -217,7 +219,7 @@
     $("#degree").empty();
     $("#keyword").empty();
     $("#overall").empty();
-    $.get('http://ec2-13-233-0-31.ap-south-1.compute.amazonaws.com:9001/adminpanel/api/v1/processcv', function(data){
+    $.get(proDomain+'/adminpanel/api/v1/processcv', function(data){
       $('.loader').hide();
       $('#process').show();
       var obj = JSON.parse(data);
