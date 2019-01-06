@@ -40,7 +40,7 @@ def textClean(applicant_cv):
             text_in_resume.append(s)
             i+=1
         except:
-            pass
+            print('Failed to process for ',str(cv.applicant_cv))
 
     clean_text=[]
     for i in text_in_resume:
