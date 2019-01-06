@@ -1,56 +1,59 @@
-var domainName = "http://127.0.0.1:8000";
-  //var domainName = "http://ec2-52-66-248-85.ap-south-1.compute.amazonaws.com:9001";
+//var domainName = "http://127.0.0.1:8000";
+  var domainName = "http://ec2-52-66-248-85.ap-south-1.compute.amazonaws.com:9001";
 var keyvalues = [];
-$('#addkey').click(function(){
-  $(this).hide();
-  $('#newkey').show();
-  $('#closekey').show();
-});
-
-$(document).on('click', '#closekey', function(){
-  $(this).hide();
-  $('#newkey').hide();
-  $('#addkey').show();
-});
-
-$(document).on('keypress', '#newkey', function(e){
-  if(e.keyCode==13){
-    var kw = $('#newkey');
-    if(kw.val().length>1){
-      $.get(domainName+'/adminpanel/addkeywords/'+kw.val(), function(data){
-        //console.log(data);
-        $("#keydata").prepend('<button class="btn btn-secondary" style="margin-bottom:3px;">'+kw.val()+'</button>');
-        kw.val("");
-        kw.hide();
-        $('#addkey').show();
-      }).fail(function(){
-        alert('Server error');
-        kw.val("");
-        kw.hide();
-        $('#addkey').show();
-      });
-
-
+var key_len = 0;
+$('#skey').change(function(){
+  var skey = $(this).find('option:selected').val();
+  flg = 0;
+  $.each(keyvalues, function(i, v) {
+    if (v.k_value == skey) {
+        flg = 1;
+        console.log(v.k_value);
+        return;
     }
+});
+  if (flg==0){
+    $('.keytable').append('<tr><td>'+(key_len+1)+'.</td><td><span class="badge badge-dark">'+skey+'</span></td><td><img src="/static/css/close.png" style="width:30px;cursor:pointer" alt=""></td></tr>');
+    getData();
+  }else{
+    $('#sinfo').html('<br/>'+skey+' is already added');
   }
+  $('#skey').val("");
+});
+
+$(document).on('click', '#newkeybtn', function(e){
+  var kw = $('#newkey').val();
+  if(kw.length>1){
+      $.get(domainName+'/adminpanel/addkeywords/'+kw, function(data){
+        $('.keytable').append('<tr><td>'+(key_len+1)+'</td><td><span class="badge badge-dark">'+kw+'</span></td><td><img src="/static/css/close.png" style="width:30px;cursor:pointer" alt=""></td></tr>');
+        getData();
+      }).fail(function(){
+        $('#snew').text('Server error');
+      });
+      $('#newkey').val("");
+    }else {
+      $('#snew').text('field is required');
+    }
+});
+$(document).on('click', '.keytable img', function(e){
+  $(this).parent().parent().remove();
 });
 
 var getData = function(){
   keyvalues = [];
-  $.each($('.btn', '#keydata'),function(k){
-    keyvalues.push({
-      "k_value": $(this).text().trim()
+  $('.keytable').find('tr').each(function (i, el) {
+        var $tds = $(this).find('td');
+        if($tds.eq(1).text()!=""){
+          keyvalues.push({
+            "k_value": $tds.eq(1).text()
+          });
+        }
     });
-  });
-  $('#key span').text("(Total "+keyvalues.length+" Keywords)");
+  key_len = keyvalues.length;
+  $('#key span').text("(Total "+key_len+" Keywords)");
   //console.log(keyvalues);
 }
 getData();
-
-$(document).on('click', '#keydata .btn', function(){
-  $(this).remove();
-  getData();
-});
 
 $('#process').click(function(){
   //console.log(keyvalues);
