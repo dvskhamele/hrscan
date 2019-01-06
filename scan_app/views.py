@@ -13,6 +13,7 @@ from .read_colleges import *
 from .preprocessing_degree import *
 from .selected_resume import *
 import json
+from django.views.decorators.csrf import csrf_exempt
 
 #[{<FieldFile: CV1.docx>: [1]}, {<FieldFile: CV3.docx>: [39]}]
 #[{<FieldFile: CV1.docx>: [2, 12, 5]}, {<FieldFile: CV2.docx>: [34, 3]}, {<FieldFile: CV3.docx>: []}]
@@ -71,11 +72,15 @@ def adminpanel(request):
     context['keywords'] = CVKeywords.objects.all()
     return render(request, 'admin.html', context)
 
+@csrf_exempt
 def processCV(request):
+    cv_keywords = request.POST['keyvalues[]']
+    cv_keywords = json.loads(cv_keywords)
+
     college = ApplicantCollege.objects.all();
     degree = ApplicantDegree.objects.all();
     applicant_cv = ApplicantCV.objects.all()
-    cv_keywords = CVKeywords.objects.all()
+    #cv_keywords = CVKeywords.objects.all()
     neg_keywords = Neg_keywords.objects.all()
     college_count = ApplicantCollege.objects.count();
     degree_count = ApplicantDegree.objects.count();
@@ -95,6 +100,8 @@ def processCV(request):
         'college_count': college_count,
         'degree_count': degree_count
     })
+
+    #response = 0
     return HttpResponse(response)
 
 def addKW(request, kw=None):

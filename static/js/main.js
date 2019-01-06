@@ -36,8 +36,11 @@ $(document).on('keypress', '#newkey', function(e){
 });
 
 var getData = function(){
+  keyvalues = [];
   $.each($('.btn', '#keydata'),function(k){
-    keyvalues.push($(this).text().trim());
+    keyvalues.push({
+      "k_value": $(this).text().trim()
+    });
   });
   $('#key span').text("(Total "+keyvalues.length+" Keywords)");
   //console.log(keyvalues);
@@ -50,17 +53,19 @@ $(document).on('click', '#keydata .btn', function(){
 });
 
 $('#process').click(function(){
+  //console.log(keyvalues);
   $(this).hide();
+  //keyvalues
   $('.loader').fadeIn();
   $("#college").empty();
   $("#degree").empty();
   $("#keyword").empty();
   $("#overall").empty();
-  $.get(domainName+'/adminpanel/api/v1/processcv', function(data){
+  $.post(domainName+'/adminpanel/api/v1/processcv',{'keyvalues[]': JSON.stringify(keyvalues)}, function(data){
     $('.loader').hide();
     $('#process').show();
     var obj = JSON.parse(data);
-    console.log(obj);
+  //  console.log(obj);
     var clgRank = [];
     var degreeRank = [];
     var keywordRank = [];

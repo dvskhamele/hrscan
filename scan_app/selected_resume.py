@@ -161,11 +161,11 @@ def keywordRank(applicant_cv, cv_keywords, clean_text, neg_keywords):
     ku = []
     for i in cv_keywords:
         try:
-            wd = i.k_value.lower().split(' ')
+            wd = i["k_value"].lower().split(' ')
             for k in wd:
                 ku.append(lem.lemmatize(k, pos=wordnet.ADJ))
         except:
-            ku.append(lem.lemmatize(k, pos=wordnet.ADJ))
+            ku.append(lem.lemmatize(i["k_value"].lower(), pos=wordnet.ADJ))
 
     similar_keywords = []
     for words in ku:
