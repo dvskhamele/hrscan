@@ -10,6 +10,7 @@ from textblob import Word # for lemmatize
 import nltk
 from nltk.corpus import wordnet
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer
+import textract
 
 lem = WordNetLemmatizer()
 
@@ -35,9 +36,11 @@ def textClean(applicant_cv):
     text_in_resume = []
     i = 1
     exclude_cv = []
+    degg = []
     for cv in applicant_cv:
         try:
             data = docx2txt.process(cv['applicant_cv'])
+            #data = textract.process(cv['applicant_cv'].url)
             degg = checkDegree(data)
             data = TextBlob(data.lower()).words
             lemmatized_data = [lem.lemmatize(i, pos=wordnet.ADJ) for i in data]
