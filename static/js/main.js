@@ -1,5 +1,5 @@
-//var domainName = "http://127.0.0.1:8000";
-  var domainName = "http://ec2-52-66-248-85.ap-south-1.compute.amazonaws.com:9001";
+var domainName = "http://127.0.0.1:8000";
+//  var domainName = "http://ec2-52-66-248-85.ap-south-1.compute.amazonaws.com:9001";
 var keyvalues = [];
 var key_len = 0;
 $('#skey').change(function(){
@@ -94,7 +94,7 @@ $('#process').click(function(){
     $('.loader').hide();
     $('#process').show();
     var obj = JSON.parse(data);
-  //  console.log(obj);
+    console.log(obj);
     var clgRank = [];
     var degreeRank = [];
     var keywordRank = [];

@@ -13,6 +13,12 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, T
 
 lem = WordNetLemmatizer()
 
+def getDictCV(applicant_cv):
+    applicant_cv_dict = []
+    for a in applicant_cv:
+        applicant_cv_dict.append({'id': a.id, 'applicant_name': a.applicant_name, 'applicant_cv': a.applicant_cv})
+    return applicant_cv_dict
+
 def checkDegree(data):
     degree = ['B.E.', 'B.E', 'b.e.', 'B.e.', 'B.e', 'BE', 'M.E.', 'M.E', 'm.e.', 'M.e.', 'M.e', 'ME']
     lkj = []
@@ -25,12 +31,13 @@ def checkDegree(data):
 def textClean(applicant_cv):
     #nltk.download()
 #    nltk.download('omw')
-
+    applicant_cv_1 = applicant_cv
     text_in_resume = []
     i = 1
+    exclude_cv = []
     for cv in applicant_cv:
         try:
-            data = docx2txt.process(cv.applicant_cv)
+            data = docx2txt.process(cv['applicant_cv'])
             degg = checkDegree(data)
             data = TextBlob(data.lower()).words
             lemmatized_data = [lem.lemmatize(i, pos=wordnet.ADJ) for i in data]
@@ -40,7 +47,9 @@ def textClean(applicant_cv):
             text_in_resume.append(s)
             i+=1
         except:
-            print('Failed to process for ',str(cv.applicant_cv))
+            applicant_cv_1.remove(cv)
+            exclude_cv.append({'id': cv['id'], 'applicant_name': cv['applicant_name']})
+            print('Failed to process for ',str(cv['applicant_cv']))
 
     clean_text=[]
     for i in text_in_resume:
@@ -52,8 +61,11 @@ def textClean(applicant_cv):
         ct = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\xff]', '', ct)
         clean_text.append(ct)
     clean_text += degg
-
-    return clean_text
+    c_data = {}
+    c_data['applicant_cv_1'] = applicant_cv_1
+    c_data['clean_text'] = clean_text
+    c_data['exclude_cv'] = exclude_cv
+    return c_data
 
 def collegeRank(clg, applicant_cv, clean_text):
     college_rankings = clg
@@ -68,7 +80,7 @@ def collegeRank(clg, applicant_cv, clean_text):
                 if (' '+c+' ') in text or (' '+c+'.') in text or (' '+c+',') in text:
                     applicant_clg.append(c)
                     r.append(rank)
-                    rank_resume_by = {applicant_cv[i].applicant_name:r, 'college': applicant_clg}
+                    rank_resume_by = {applicant_cv[i]['applicant_name']:r, 'college': applicant_clg}
                     flag = 1
 
         if rank_resume_by not in rank_resume_by_college:
@@ -93,7 +105,7 @@ def degreeRank(deg, applicant_cv, clean_text):
                             applicant_deg.append(d)
                         rr.append(rank)
         rr = list(set(rr))
-        rank_resume_by_degree.append({applicant_cv[i].applicant_name:rr, 'degree': applicant_deg})
+        rank_resume_by_degree.append({applicant_cv[i]['applicant_name']:rr, 'degree': applicant_deg})
         i += 1
     return rank_resume_by_degree
 '''
@@ -148,7 +160,7 @@ def keywordRank(applicant_cv, cv_keywords, clean_text):
             for key in similar_keywords:
                 count += 1
         print(count)
-        rank_resume_by_keywords.append({applicant_cv[i].applicant_name:(count/len_keywords)})
+        rank_resume_by_keywords.append({applicant_cv[i]['applicant_name']:(count/len_keywords)})
         i += 1
 
     print('end')
@@ -195,7 +207,7 @@ def keywordRank(applicant_cv, cv_keywords, clean_text, neg_keywords):
                 count += 1
                 keys.append(" "+key)
                 #print('cv',i,key)
-        rank_resume_by_keywords.append({applicant_cv[i].applicant_name:(count/len_keywords), 'keywords': keys, 'keywordsCount': len(keys)})
+        rank_resume_by_keywords.append({applicant_cv[i]['applicant_name']:(count/len_keywords), 'keywords': keys, 'keywordsCount': len(keys)})
         i += 1
 
     print('end')

@@ -80,6 +80,10 @@ def processCV(request):
     college = ApplicantCollege.objects.all();
     degree = ApplicantDegree.objects.all();
     applicant_cv = ApplicantCV.objects.all()
+    applicant_cv = getDictCV(applicant_cv)
+    #c_data['applicant_cv_1'] = applicant_cv_1
+    #c_data['clean_text']
+    #print(applicant_cv[0]['applicant_name'])
     #cv_keywords = CVKeywords.objects.all()
     neg_keywords = Neg_keywords.objects.all()
     college_count = ApplicantCollege.objects.count();
@@ -87,18 +91,20 @@ def processCV(request):
 
     clg = clgCombination(college)
     deg = degreeCombination(degree)
-    clean_text = textClean(applicant_cv)
+    c_data = textClean(applicant_cv)
 
-    collegerank = collegeRank(clg, applicant_cv, clean_text)
-    degreerank = degreeRank(deg, applicant_cv, clean_text)
-    keywordrank = keywordRank(applicant_cv, cv_keywords, clean_text, neg_keywords)
+    collegerank = collegeRank(clg, c_data['applicant_cv_1'], c_data['clean_text'])
+    degreerank = degreeRank(deg, c_data['applicant_cv_1'], c_data['clean_text'])
+    keywordrank = keywordRank(c_data['applicant_cv_1'], cv_keywords, c_data['clean_text'], neg_keywords)
     #keywordrank = 0
+
     response = json.dumps({
         'collegeRank': collegerank,
         'degreeRank': degreerank,
         'keywordRank':keywordrank,
         'college_count': college_count,
-        'degree_count': degree_count
+        'degree_count': degree_count,
+        'exclude_cv': c_data['exclude_cv']
     })
 
     #response = 0
