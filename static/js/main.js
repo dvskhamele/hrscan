@@ -241,3 +241,14 @@ function exportTableToExcel(tableID, filename = ''){
       downloadLink.click();
   }
 }
+
+$(document).on('click', '.del', function(){
+  var id = $(this).attr('id');
+  var cv = $(this).parent().parent();
+  $.get(domainName+"/adminpanel/cv/"+id, function(data){
+    alert('deleted');
+    cv.remove();
+  }).fail(function(){
+    alert('try again');
+  });
+});

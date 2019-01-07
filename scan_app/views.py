@@ -127,3 +127,13 @@ class CreateApplicantDegree(generics.CreateAPIView):
 class CreateCVKeywords(generics.CreateAPIView):
     queryset = CVKeywords.objects.all()
     serializer_class = CVKeywordsSerializer
+
+def getcv(request):
+    context = {}
+    context['applicant_cv'] = ApplicantCV.objects.all()
+    return render(request, 'cv.html', context)
+
+def deletecv(request, id=None):
+    app = ApplicantCV.objects.get(id=id)
+    app.delete()
+    return HttpResponse('Deleted')
