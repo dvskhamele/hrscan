@@ -11,11 +11,17 @@ $('#skey').change(function(){
         console.log(v.k_value);
         return;
     }
-});
+  });
   if (flg==0){
     $('.keytable').append('<tr><td>'+(key_len+1)+'.</td><td><span class="badge badge-dark">'+skey+'</span></td><td><img src="/static/css/close.png" style="width:30px;cursor:pointer" alt=""></td></tr>');
     getData();
+    $('#sinfo').removeClass('text-danger');
+    $('#sinfo').addClass('text-success');
+    $('#sinfo').html('<br/>'+skey+' is added');
+    $('#sinfo').html('<br/>'+skey+' is already added');
   }else{
+    $('#sinfo').removeClass('text-success');
+    $('#sinfo').addClass('text-danger');
     $('#sinfo').html('<br/>'+skey+' is already added');
   }
   $('#skey').val("");
@@ -26,16 +32,36 @@ $(document).on('click', '#newkeybtn', function(e){
   if(kw.length>1){
       $.get(domainName+'/adminpanel/addkeywords/'+kw, function(data){
         $('.keytable').append('<tr><td>'+(key_len+1)+'</td><td><span class="badge badge-dark">'+kw+'</span></td><td><img src="/static/css/close.png" style="width:30px;cursor:pointer" alt=""></td></tr>');
+        $('#snew').removeClass('text-danger');
+        $('#snew').addClass('text-success');
+        $('#snew').text(kw+' is Added');
         getData();
       }).fail(function(){
+        $('#snew').removeClass('text-success');
+        $('#snew').addClass('text-danger');
         $('#snew').text('Server error');
       });
       $('#newkey').val("");
     }else {
+      $('#snew').removeClass('text-success');
+      $('#snew').addClass('text-danger');
       $('#snew').text('field is required');
     }
 });
 $(document).on('click', '.keytable img', function(e){
+  var $tds = $(this).parent().parent().find('td');
+  neuarr = [];
+  $.each(keyvalues, function(i, v) {
+    if (v.k_value != $tds.eq(1).text()) {
+      neuarr.push({
+        "k_value": v.k_value
+      });
+    }
+  });
+  keyvalues = neuarr;
+  //console.log(keyvalues);
+  key_len = keyvalues.length;
+  $('#key span').text("(Total "+key_len+" Keywords)");
   $(this).parent().parent().remove();
 });
 
