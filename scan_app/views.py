@@ -134,14 +134,3 @@ def deletecv(request, id=None):
     app = ApplicantCV.objects.get(id=id)
     app.delete()
     return HttpResponse('Deleted')
-
-import textract
-def pdftest(request):
-    applicant_cv = ApplicantCV.objects.all()
-    applicant_cv = getDictCV(applicant_cv)
-    for cv in applicant_cv:
-        data = ""
-        if cv['cv_ext']=='.doc':
-            data = textract.process(cv['applicant_cv'].path)
-            data = str(data)
-    return render(request, "pdftest.html", {'data':data})
