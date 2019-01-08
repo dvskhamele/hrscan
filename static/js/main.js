@@ -105,7 +105,8 @@ $('#process').click(function(){
           var min = Math.min.apply(null, value);
           clgRank.push({
             'name': key,
-            'rank': (obj.college_count-min)
+            'rank': (obj.college_count-min),
+            'clg': value
           });
         }
       });
@@ -122,7 +123,8 @@ $('#process').click(function(){
             var min = Math.min.apply(null, value);
             degreeRank.push({
               'name': key,
-              'rank': (obj.degree_count-min)
+              'rank': (obj.degree_count-min),
+              'deg': value
             });
           }
         }else {
@@ -155,7 +157,7 @@ $('#process').click(function(){
     //grandArr = sortJSON(grandArr,'rank', '321');
     var grandArr = [];
     var tempArr = [keywordRank, clgRank, degreeRank];
-    //console.log(tempArr);
+    console.log(tempArr);
     for(k=0;k<tempArr.length;k++){
       $.each( tempArr[k], function( key, value ) {
         flg=0;
@@ -169,30 +171,38 @@ $('#process').click(function(){
               grandArr[x]['total'] = value.rank+ Number(grandArr[x]['total']);
               grandArr[x]['values'] = value.rank+" "+grandArr[x]['values'];
             }
+            if(value.deg!=null){
+              grandArr[x]['deg'] = value.deg
+            }
+            if(value.clg!=null){
+              grandArr[x]['clg'] = value.clg
+            }
           }
       }
       if(flg==0){
         grandArr.push({
           'name': value.name,
           'total': value.rank,
-          'values': value.rank
+          'values': value.rank,
+          'clg': [],
+          'deg': []
         });
       }
       });
     }
 
     grandArr = sortJSON(grandArr,'total', '321');
-    //console.log(grandArr);
+    console.log(grandArr);
     grandTotal = 0;
     $.each( grandArr, function( key, value ) {
       grandTotal += Number(value.total);
     });
-    console.log(grandTotal);
+    //console.log(grandTotal);
     var t_rank = 1;
-    $("#overall").append('<tr><th>Rank</th><th>Name of Applicant</th><th>Total Score</th></tr>');
+    $("#overall").append('<tr><th>Rank</th><th>Name of Applicant</th><th>College Rank</th><th>Degree Rank</th><th>Total Score</th></tr>');
     $.each( grandArr, function( key, value ) {
       var per = (value.total*100)/grandTotal;
-      $("#overall").append('<tr><td>'+(t_rank++)+'.</td><td>'+value.name+"</td><td>"+per.toFixed(2)+"%</td></tr>");
+      $("#overall").append('<tr><td>'+(t_rank++)+'.</td><td>'+value.name+"</td><td>"+value.clg+"</td><td>"+value.deg+"</td><td>"+per.toFixed(2)+"%</td></tr>");
     });
   //  console.log(grandArr);
   //exportTableToExcel('overall', 'CVResults');

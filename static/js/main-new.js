@@ -156,7 +156,7 @@ $('#process').click(function(){
     //clgRank = sortJSON(clgRank,'rank', '321');
     //grandArr = sortJSON(grandArr,'rank', '321');
     var grandArr = [];
-    var tempArr = [clgRank, degreeRank, keywordRank];
+    var tempArr = [keywordRank, clgRank, degreeRank];
     console.log(tempArr);
     for(k=0;k<tempArr.length;k++){
       $.each( tempArr[k], function( key, value ) {
@@ -174,27 +174,18 @@ $('#process').click(function(){
             if(value.deg!=null){
               grandArr[x]['deg'] = value.deg
             }
+            if(value.clg!=null){
+              grandArr[x]['clg'] = value.clg
+            }
           }
       }
       if(flg==0){
-        var cclg = [];
-        console.log(cclg);
-        if(value.clg!=null){
-          cclg = value.clg;
-        }else{
-          cclg = [];
-        }
-        if(value.deg!=null){
-          ddeg = value.deg;
-        }else{
-          ddeg = [];
-        }
         grandArr.push({
           'name': value.name,
           'total': value.rank,
           'values': value.rank,
-          'clg': cclg,
-          'deg': ddeg
+          'clg': [],
+          'deg': []
         });
       }
       });
@@ -208,10 +199,10 @@ $('#process').click(function(){
     });
     //console.log(grandTotal);
     var t_rank = 1;
-    $("#overall").append('<tr><th>Rank</th><th>Name of Applicant</th><th>Total Score</th></tr>');
+    $("#overall").append('<tr><th>Rank</th><th>Name of Applicant</th><th>College Rank</th><th>Degree Rank</th><th>Total Score</th></tr>');
     $.each( grandArr, function( key, value ) {
       var per = (value.total*100)/grandTotal;
-      $("#overall").append('<tr><td>'+(t_rank++)+'.</td><td>'+value.name+"</td><td>"+per.toFixed(2)+"%</td><td>"+value.clg+"</td><td>"+value.deg+"</td></tr>");
+      $("#overall").append('<tr><td>'+(t_rank++)+'.</td><td>'+value.name+"</td><td>"+value.clg+"</td><td>"+value.deg+"</td><td>"+per.toFixed(2)+"%</td></tr>");
     });
   //  console.log(grandArr);
   //exportTableToExcel('overall', 'CVResults');
