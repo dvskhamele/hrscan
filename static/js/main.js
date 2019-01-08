@@ -1,5 +1,5 @@
-//var domainName = "http://127.0.0.1:8000";
-  var domainName = "http://ec2-52-66-248-85.ap-south-1.compute.amazonaws.com:9001";
+var domainName = "http://127.0.0.1:8000";
+//  var domainName = "http://ec2-52-66-248-85.ap-south-1.compute.amazonaws.com:9001";
 var keyvalues = [];
 var key_len = 0;
 $('#skey').change(function(){
@@ -100,17 +100,18 @@ $('#process').click(function(){
     var keywordRank = [];
     for(i=0;i<obj.collegeRank.length;i++){
       $.each( obj.collegeRank[i], function( key, value ) {
-        $("#college").append('<tr><td></td><td><strong>'+key+"</strong></td><td>"+value+"</td></tr>");
+        $("#college").append('<tr><td></td><td><strong>'+key+"</strong></td><td>"+value.rank+"</td><td>"+value.college+"</td></tr>");
         if(key!="college"){
-          var min = Math.min.apply(null, value);
+          var min = Math.min.apply(null, value.rank);
           clgRank.push({
             'name': key,
             'rank': (obj.college_count-min),
-            'clg': value
+            'clgrank': value.rank,
+            'clg': value.college
           });
         }
       });
-      $("#college").append("<tr><td colspan='3'></td></tr>");
+      $("#college").append("<tr><td colspan='4'></td></tr>");
     }
 
     for(i=0;i<obj.degreeRank.length;i++){
@@ -118,13 +119,14 @@ $('#process').click(function(){
       $.each( obj.degreeRank[i], function( key, value ) {
         if(value!=""){
           flg = 0;
-          $("#degree").append('<tr><td><strong>'+key+"</strong></td><td>"+value+"</td></tr>");
+          $("#degree").append('<tr><td><strong>'+key+"</strong></td><td>"+value.rank+"</td><td>"+value.degree+"</td></tr>");
           if(key!="degree"){
-            var min = Math.min.apply(null, value);
+            var min = Math.min.apply(null, value.rank);
             degreeRank.push({
               'name': key,
               'rank': (obj.degree_count-min),
-              'deg': value
+              'degrank': value.rank,
+              'deg': value.degree
             });
           }
         }else {
@@ -132,25 +134,21 @@ $('#process').click(function(){
         }
       });
       if (flg==0){
-        $("#degree").append("<tr><td colspan='3'></td></tr>");
+        $("#degree").append("<tr><td colspan='4'></td></tr>");
       }
     }
 
     for(i=0;i<obj.keywordRank.length;i++){
       $.each( obj.keywordRank[i], function( key, value ) {
-        if(key=='keywords'){
-          $("#keyword").append('<tr><td><strong>'+key+"</strong></td><td>"+value+"</td></tr>");
-        }else if(key=='keywordsCount'){
-          $("#keyword").append('<tr><td><strong>'+key+"</strong></td><td>"+value+"</td></tr>");
-        }else{
-          $("#keyword").append('<tr><td><strong>'+key+"</strong></td><td>"+(value*100).toFixed(2)+"</td></tr>");
-          keywordRank.push({
-            'name': key,
-            'rank': (value*100).toFixed(2)
-          });
-        }
+        $("#keyword").append('<tr><td><strong>'+key+"</strong></td><td>"+(value.rank*100).toFixed(2)+"</td><td>"+value.keywordsCount+"</td><td>"+value.keywords+"</td></tr>");
+        keywordRank.push({
+          'name': key,
+          'rank': (value.rank*100).toFixed(2),
+          'keyrank': value.keywordsCount,
+          'keywords': value.keywords
+        });
       });
-      $("#keyword").append("<tr><td colspan='2'></td></tr>");
+      $("#keyword").append("<tr><td colspan='5'></td></tr>");
     }
   //  keywordRank = sortJSON(keywordRank,'rank', '321');
     //clgRank = sortJSON(clgRank,'rank', '321');
@@ -177,6 +175,9 @@ $('#process').click(function(){
             if(value.clg!=null){
               grandArr[x]['clg'] = value.clg
             }
+          /*  if(value.keyrank){
+              grandArr[x]['keyrank'] = value.keyrank
+            }*/
           }
       }
       if(flg==0){
@@ -185,7 +186,8 @@ $('#process').click(function(){
           'total': value.rank,
           'values': value.rank,
           'clg': [],
-          'deg': []
+          'deg': [],
+          'keyrank': value.keyrank
         });
       }
       });
@@ -199,10 +201,10 @@ $('#process').click(function(){
     });
     //console.log(grandTotal);
     var t_rank = 1;
-    $("#overall").append('<tr><th>Rank</th><th>Name of Applicant</th><th>College Rank</th><th>Degree Rank</th><th>Total Score</th></tr>');
+    $("#overall").append('<tr><th>Rank</th><th>Name of Applicant</th><th>College Rank</th><th>Degree Rank</th><th>Total Keywords</th><th>Total Score</th></tr>');
     $.each( grandArr, function( key, value ) {
       var per = (value.total*100)/grandTotal;
-      $("#overall").append('<tr><td>'+(t_rank++)+'.</td><td>'+value.name+"</td><td>"+value.clg+"</td><td>"+value.deg+"</td><td>"+per.toFixed(2)+"%</td></tr>");
+      $("#overall").append('<tr><td>'+(t_rank++)+'.</td><td>'+value.name+"</td><td>"+value.clg+"</td><td>"+value.deg+"</td><td>"+value.keyrank+"</td><td>"+per.toFixed(2)+"%</td></tr>");
     });
   //  console.log(grandArr);
   //exportTableToExcel('overall', 'CVResults');

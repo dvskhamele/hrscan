@@ -96,7 +96,7 @@ def collegeRank(clg, applicant_cv, clean_text):
                 if (' '+c+' ') in text or (' '+c+'.') in text or (' '+c+',') in text:
                     applicant_clg.append(c)
                     r.append(rank)
-                    rank_resume_by = {applicant_cv[i]['applicant_name']:r, 'college': applicant_clg}
+                    rank_resume_by = {applicant_cv[i]['applicant_name']:{'rank':r, 'college': applicant_clg}}
                     flag = 1
 
         if rank_resume_by not in rank_resume_by_college:
@@ -122,7 +122,7 @@ def degreeRank(deg, applicant_cv, clean_text):
                         rr.append(rank)
         rr = list(set(rr))
         if len(rr)>=1:
-            rank_resume_by_degree.append({applicant_cv[i]['applicant_name']:rr, 'degree': applicant_deg})
+            rank_resume_by_degree.append({applicant_cv[i]['applicant_name']:{'rank':rr, 'degree': applicant_deg}})
         i += 1
     return rank_resume_by_degree
 '''
@@ -222,7 +222,7 @@ def keywordRank(applicant_cv, cv_keywords, clean_text, neg_keywords):
                 count += 1
                 keys.append(" "+key)
                 #print('cv',i,key)
-        rank_resume_by_keywords.append({applicant_cv[i]['applicant_name']:(count/len_keywords), 'keywords': keys, 'keywordsCount': len(keys)})
+        rank_resume_by_keywords.append({applicant_cv[i]['applicant_name']:{'rank':(count/len_keywords), 'keywords': keys, 'keywordsCount': len(keys)}})
         i += 1
 
     print('end')
