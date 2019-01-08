@@ -135,16 +135,13 @@ def deletecv(request, id=None):
     app.delete()
     return HttpResponse('Deleted')
 
-import PyPDF2
+import textract
 def pdftest(request):
     applicant_cv = ApplicantCV.objects.all()
     applicant_cv = getDictCV(applicant_cv)
     for cv in applicant_cv:
         data = ""
-        if cv['cv_ext']=='.pdf':
-            pdfFileObj = open(cv['applicant_cv'].path,'rb')     #'rb' for read binary mode
-            pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
-            for p in range(pdfReader.numPages):
-                pageObj = pdfReader.getPage(p)          #'9' is the page number
-                data += pageObj.extractText()
+        if cv['cv_ext']=='.doc':
+            data = textract.process(cv['applicant_cv'].path)
+            data = str(data)
     return render(request, "pdftest.html", {'data':data})

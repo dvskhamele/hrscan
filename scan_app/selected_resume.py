@@ -11,6 +11,7 @@ import nltk
 from nltk.corpus import wordnet
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer
 import PyPDF2
+import textract
 
 lem = WordNetLemmatizer()
 
@@ -48,6 +49,9 @@ def textClean(applicant_cv):
                 for p in range(pdfReader.numPages):
                     pageObj = pdfReader.getPage(p)          #'9' is the page number
                     data += pageObj.extractText()
+                data = str(data)
+            elif cv['cv_ext'] == '.doc':
+                data = textract.process(cv['applicant_cv'].path)
                 data = str(data)
             degg = checkDegree(data)
             data = TextBlob(data.lower()).words
