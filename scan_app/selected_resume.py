@@ -10,14 +10,13 @@ from textblob import Word # for lemmatize
 import nltk
 from nltk.corpus import wordnet
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer
-import textract
 
 lem = WordNetLemmatizer()
 
 def getDictCV(applicant_cv):
     applicant_cv_dict = []
     for a in applicant_cv:
-        applicant_cv_dict.append({'id': a.id, 'applicant_name': a.applicant_name, 'applicant_cv': a.applicant_cv})
+        applicant_cv_dict.append({'id': a.id, 'applicant_name': a.applicant_name, 'applicant_cv': a.applicant_cv, 'cv_ext': a.cv_ext})
     return applicant_cv_dict
 
 def checkDegree(data):
@@ -27,7 +26,6 @@ def checkDegree(data):
         if deg in data:
             lkj.append(deg)
     return lkj
-
 
 def textClean(applicant_cv):
     #nltk.download()
@@ -39,8 +37,8 @@ def textClean(applicant_cv):
     degg = []
     for cv in applicant_cv:
         try:
-            data = docx2txt.process(cv['applicant_cv'])
-            #data = textract.process(cv['applicant_cv'].url)
+            if cv['cv_ext'] == '.docx':
+                data = docx2txt.process(cv['applicant_cv'])
             degg = checkDegree(data)
             data = TextBlob(data.lower()).words
             lemmatized_data = [lem.lemmatize(i, pos=wordnet.ADJ) for i in data]
@@ -62,8 +60,9 @@ def textClean(applicant_cv):
         ct = re.sub(r"\s+", " ", ct)
         ct = re.sub(r'\.', '', ct)
         ct = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\xff]', '', ct)
+        for d in degg:
+            ct += d+" "
         clean_text.append(ct)
-    clean_text += degg
     c_data = {}
     c_data['applicant_cv_1'] = applicant_cv_1
     c_data['clean_text'] = clean_text

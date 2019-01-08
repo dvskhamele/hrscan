@@ -14,24 +14,21 @@ from .preprocessing_degree import *
 from .selected_resume import *
 import json
 from django.views.decorators.csrf import csrf_exempt
-
-#[{<FieldFile: CV1.docx>: [1]}, {<FieldFile: CV3.docx>: [39]}]
-#[{<FieldFile: CV1.docx>: [2, 12, 5]}, {<FieldFile: CV2.docx>: [34, 3]}, {<FieldFile: CV3.docx>: []}]
-#[{<FieldFile: CV1.docx>: 334.61309523809524}, {<FieldFile: CV2.docx>: 169.60119047619048}, {<FieldFile: CV3.docx>: 193.44642857142858}]
-
+import os
 
 def index(request):
     if request.method == 'POST' and request.FILES['usercv']:
         cname = request.POST['cname']
         myfile = request.FILES['usercv']
-
+        fext = os.path.splitext(str(myfile))
         fs = FileSystemStorage()
         filename = fs.save(myfile.name, myfile)
         uploaded_file_url = fs.url(filename)
         #print(uploaded_file_url)
         url = uploaded_file_url.split('/media/')
         #print(uploaded_file_url.split('/media/'))
-        a = ApplicantCV(applicant_name = cname, applicant_cv = url[1])
+        fext = fext[len(fext)-1]
+        a = ApplicantCV(applicant_name = cname, applicant_cv = url[1], cv_ext=fext)
         a.save()
         #request.session['status'] = "CV Submitted"
         return HttpResponse("<script>alert('Your CV is Submitted');window.location.href='./';</script>")

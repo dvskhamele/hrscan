@@ -10,6 +10,7 @@ class ApplicantCV(models.Model):
     applicant_name = models.CharField(max_length=50)
     applicant_cv = models.FileField()
     upload_date = models.DateTimeField(auto_now=True)
+    cv_ext = models.CharField(max_length=5)
 
     def __str__(self):
         return self.applicant_name
