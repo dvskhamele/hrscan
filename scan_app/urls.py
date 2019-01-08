@@ -16,6 +16,8 @@ urlpatterns = [
     #path('adminpanel/api/v1/addcdegree', views.CreateApplicantDegree.as_view()),
     path('adminpanel/api/v1/addkeywords', views.CreateCVKeywords.as_view()),
     path('adminpanel/api/v1/processcv', views.processCV),
+
+    path('adminpanel/pdftest/', views.pdftest),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

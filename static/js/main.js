@@ -182,11 +182,12 @@ $('#process').click(function(){
     }
 
     grandArr = sortJSON(grandArr,'total', '321');
-
+    //console.log(grandArr);
     grandTotal = 0;
     $.each( grandArr, function( key, value ) {
-      grandTotal += value.total;
+      grandTotal += Number(value.total);
     });
+    console.log(grandTotal);
     var t_rank = 1;
     $("#overall").append('<tr><th>Rank</th><th>Name of Applicant</th><th>Total Score</th></tr>');
     $.each( grandArr, function( key, value ) {

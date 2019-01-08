@@ -10,6 +10,7 @@ from textblob import Word # for lemmatize
 import nltk
 from nltk.corpus import wordnet
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, TfidfVectorizer
+import PyPDF2
 
 lem = WordNetLemmatizer()
 
@@ -39,6 +40,15 @@ def textClean(applicant_cv):
         try:
             if cv['cv_ext'] == '.docx':
                 data = docx2txt.process(cv['applicant_cv'])
+
+            elif cv['cv_ext'] == '.pdf':
+                data = ""
+                pdfFileObj = open(cv['applicant_cv'].path,'rb')     #'rb' for read binary mode
+                pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+                for p in range(pdfReader.numPages):
+                    pageObj = pdfReader.getPage(p)          #'9' is the page number
+                    data += pageObj.extractText()
+                data = str(data)
             degg = checkDegree(data)
             data = TextBlob(data.lower()).words
             lemmatized_data = [lem.lemmatize(i, pos=wordnet.ADJ) for i in data]
@@ -107,7 +117,8 @@ def degreeRank(deg, applicant_cv, clean_text):
                             applicant_deg.append(d)
                         rr.append(rank)
         rr = list(set(rr))
-        rank_resume_by_degree.append({applicant_cv[i]['applicant_name']:rr, 'degree': applicant_deg})
+        if len(rr)>=1:
+            rank_resume_by_degree.append({applicant_cv[i]['applicant_name']:rr, 'degree': applicant_deg})
         i += 1
     return rank_resume_by_degree
 '''
@@ -184,8 +195,8 @@ def keywordRank(applicant_cv, cv_keywords, clean_text, neg_keywords):
     similar_keywords = []
     for words in ku:
         k = words.split(' ')
-        for i in k:
-            l = wordnet.synsets(i)
+        for ii in k:
+            l = wordnet.synsets(ii)
             for j in l:
                 similar_keywords.append(j)
 
@@ -197,10 +208,8 @@ def keywordRank(applicant_cv, cv_keywords, clean_text, neg_keywords):
 
     len_keywords = len(similar_keywords)
     rank_resume_by_keywords = []
-    i = 0
-
     neg_key = [neg.n_value for neg in neg_keywords ]
-
+    i = 0
     for text in clean_text:
         count = 0
         keys = []

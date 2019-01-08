@@ -94,7 +94,7 @@ def processCV(request):
     degreerank = degreeRank(deg, c_data['applicant_cv_1'], c_data['clean_text'])
     keywordrank = keywordRank(c_data['applicant_cv_1'], cv_keywords, c_data['clean_text'], neg_keywords)
     #keywordrank = 0
-
+    print(len(c_data['applicant_cv_1']))
     response = json.dumps({
         'collegeRank': collegerank,
         'degreeRank': degreerank,
@@ -134,3 +134,17 @@ def deletecv(request, id=None):
     app = ApplicantCV.objects.get(id=id)
     app.delete()
     return HttpResponse('Deleted')
+
+import PyPDF2
+def pdftest(request):
+    applicant_cv = ApplicantCV.objects.all()
+    applicant_cv = getDictCV(applicant_cv)
+    for cv in applicant_cv:
+        data = ""
+        if cv['cv_ext']=='.pdf':
+            pdfFileObj = open(cv['applicant_cv'].path,'rb')     #'rb' for read binary mode
+            pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+            for p in range(pdfReader.numPages):
+                pageObj = pdfReader.getPage(p)          #'9' is the page number
+                data += pageObj.extractText()
+    return render(request, "pdftest.html", {'data':data})
