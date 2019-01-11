@@ -1,5 +1,5 @@
 var domainName = "http://127.0.0.1:8000";
-//  var domainName = "http://ec2-52-66-248-85.ap-south-1.compute.amazonaws.com:9001";
+//var domainName = "http://ec2-52-66-248-85.ap-south-1.compute.amazonaws.com:9001";
 var keyvalues = [];
 var key_len = 0;
 $('#skey').change(function(){
@@ -263,5 +263,38 @@ $(document).on('click', '.del', function(){
     cv.remove();
   }).fail(function(){
     alert('try again');
+  });
+});
+
+/*
+$("#search").keyup(function() {
+  var value = $(this).val();
+  $("#cvtable tr").each(function(index) {
+      if (index != 0) {
+          $row = $(this);
+          var id = $row.find("td:first").text();
+          if (id.indexOf(value) != 0) {
+              $(this).hide();
+          }else {
+              $(this).show();
+          }
+      }
+  });
+});​
+*/
+
+$("#search").keyup(function(){
+  var value = $(this).val().toUpperCase();
+  $("#cvtable tr").each(function(index) {
+      if (index != 0) {
+          $row = $(this);
+          var id = $row.find("td:nth-child(2)").text().toUpperCase();
+
+          if (id.indexOf(value) != 0) {
+              $(this).hide();
+          }else {
+              $(this).show();
+          }
+      }
   });
 });

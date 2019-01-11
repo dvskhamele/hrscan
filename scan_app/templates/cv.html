@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-    <style>
-      .loader{
-        display:none;
-      }
-    </style>
+
     <div class="container-fluid" style="margin-top:20px;">
       <div class="row">
         <div class="col-lg-12">
@@ -12,8 +8,16 @@
             <div class="card-body">
               <h4 class="card-title">CV Filter</h4>
               <hr/>
+              <div class="row">
+                <div class="col-lg-4 col-md-4">
+                  <div class="form-group">
+                    <label for="">Search Name:</label>
+                    <input type="text" class="form-control" id="search" placeholder="Enter name here...">
+                  </div>
+                </div>
+              </div>
               <div style="height:450px;overflow:auto">
-                <table class="table table-bordered">
+                <table id="cvtable" class="table table-bordered">
                   <tr>
                     <th style="width:80px">S No.</th>
                     <th>Name of Applicant</th>
@@ -24,7 +28,7 @@
                   {% for a in applicant_cv %}
                   <tr>
                     <td>{{forloop.counter}}.</td>
-                    <td>{{a.applicant_name}}</td>
+                    <td>{{a.applicant_name|upper}}</td>
                     <td>{{a.upload_date}}</td>
                     <td><a style="font-size:14px" class="badge badge-info" href="../../media/{{a.applicant_cv}}">Download</a></td>
                     <td><a style="font-size:14px" class="badge badge-danger del" id="{{a.id}}" href="#">Delete</a></td>
