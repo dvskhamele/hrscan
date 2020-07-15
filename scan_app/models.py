@@ -1,7 +1,7 @@
 from django.db import models
 import os
 import uuid
-
+from django.contrib.auth.models import User
 from django.db import models
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
@@ -11,6 +11,10 @@ class ApplicantCV(models.Model):
     applicant_cv = models.FileField()
     upload_date = models.DateTimeField(auto_now=True)
     cv_ext = models.CharField(max_length=5)
+    approved_by_hr = models.ForeignKey(User,on_delete=models.DO_NOTHING, null=True, blank=True,related_name='cvs_by_hr')
+    approved_by_tr = models.ForeignKey(User,on_delete=models.DO_NOTHING, null=True, blank=True,related_name='cvs_by_tr')
+    approved_by_mr =  models.ForeignKey(User,on_delete=models.DO_NOTHING, null=True, blank=True,related_name='cvs_by_mr')
+    rejected_by =  models.ForeignKey(User,on_delete=models.DO_NOTHING, null=True, blank=True,related_name='cvs_rejected')
 
     def __str__(self):
         return self.applicant_name

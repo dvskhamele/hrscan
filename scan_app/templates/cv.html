@@ -23,15 +23,27 @@
                     <th>Name of Applicant</th>
                     <th>Date of Upload</th>
                     <th style="width:40px">Download</th>
-                    <th style="width:40px">Delete</th>
+                    <th style="width:40px">Approve</th>
+                    <th style="width:40px">Reject</th>
                   </tr>
                   {% for a in applicant_cv %}
                   <tr>
                     <td>{{forloop.counter}}.</td>
-                    <td>{{a.applicant_name|upper}}</td>
+                    <td>{{a.applicant_name|upper}}
+{% if a.approved_by_hr or  a.approved_by_tr or  a.approved_by_mr %}
+: Approved By {{ a.approved_by_mr.username }} 
+{{ a.approved_by_tr.username }} 
+{{ a.approved_by_hr.username }} 
+{% endif %}
+{% if a.rejected_by %}
+: Rejected By {{ a.rejected_by.username }} 
+{% endif %}
+                    </td>
                     <td>{{a.upload_date}}</td>
                     <td><a style="font-size:14px" class="badge badge-info" href="../../media/{{a.applicant_cv}}">Download</a></td>
-                    <td><a style="font-size:14px" class="badge badge-danger del" id="{{a.id}}" href="#">Delete</a></td>
+                    <td><a style="font-size:14px" class="badge badge-info"
+                     href="{% url 'approved' id=a.id %}">Approve</a></td>
+                    <td><a style="font-size:14px" class="badge badge-danger del" id="{{a.id}}" href="#">Reject</a></td>
                   </tr>
                   {% endfor %}
                 </table>

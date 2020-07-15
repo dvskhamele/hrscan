@@ -25,7 +25,7 @@ SECRET_KEY = 'pcbtbhfq_d+2id-#(l^bpgt3peia26fyra#09r$fxm%8t-6_)_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition

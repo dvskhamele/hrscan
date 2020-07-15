@@ -58,7 +58,7 @@ def textClean(applicant_cv):
             lemmatized_data = [lem.lemmatize(i, pos=wordnet.ADJ) for i in data]
             s = ""
             for ii in lemmatized_data:
-            	s+=ii+' '
+                s+=ii+' '
             text_in_resume.append(s)
             i+=1
         except:
@@ -85,6 +85,7 @@ def textClean(applicant_cv):
 
 def collegeRank(clg, applicant_cv, clean_text):
     college_rankings = clg
+    rank_resume_by=clean_text
     rank_resume_by_college = []
     i=0
     for text in clean_text:
@@ -185,6 +186,10 @@ def keywordRank(applicant_cv, cv_keywords, clean_text):
 
 '''
 
+            # wd=i
+            # wd = j.lower().split(' ')
+            # print(wd)
+            # for k in wd:
 # new function
 def keywordRank(applicant_cv, cv_keywords, clean_text, neg_keywords):
     ku = []

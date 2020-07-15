@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
@@ -15,6 +15,7 @@ from .selected_resume import *
 import json
 from django.views.decorators.csrf import csrf_exempt
 import os
+from django.contrib.auth.models import User
 
 def index(request):
     if request.method == 'POST' and request.FILES['usercv']:
@@ -128,9 +129,43 @@ class CreateCVKeywords(generics.CreateAPIView):
 def getcv(request):
     context = {}
     context['applicant_cv'] = ApplicantCV.objects.all()
+    if request.user.is_authenticated:
+        if request.user.groups.filter(name='Senior Managers').exists():
+            context['applicant_cv'] = context['applicant_cv'].filter(approved_by_mr=None)
+        elif request.user.groups.filter(name='Technical Supervisiors').exists():
+            print('Technical Supervisiors',context['applicant_cv'].filter(approved_by_mr=None).filter(approved_by_tr=None).filter(rejected_by=None))
+            context['applicant_cv'] = context['applicant_cv'].filter(approved_by_mr=None).filter(approved_by_tr=None).filter(rejected_by=None)
+        elif request.user.groups.filter(name='HR Group').exists():
+            context['applicant_cv'] = context['applicant_cv'].filter(approved_by_hr=None).filter(approved_by_mr=None).filter(approved_by_tr=None).filter(rejected_by=None)
     return render(request, 'cv.html', context)
 
 def deletecv(request, id=None):
     app = ApplicantCV.objects.get(id=id)
-    app.delete()
-    return HttpResponse('Deleted')
+    app.rejected_by = request.user
+    app.save()
+    return HttpResponse('CV Rejected')
+
+def usercv(request):
+    context={}
+    if request.method == 'POST':
+            name=request.POST['name']
+            username=ApplicantCV.objects.filter(applicant_name__contains=name)
+            print(username)
+            if username:
+                    context['name']=username
+                    return render(request, 'user.html', context)
+            
+    return render(request, 'userform.html', context)
+
+@login_required(login_url='../login/')
+def approve_hr(request,id):
+    applicant_cv=ApplicantCV.objects.get(id=id)
+    if request.user.is_authenticated:
+        if request.user.groups.filter(name='Senior Managers').exists():
+            applicant_cv.approved_by_mr = request.user
+        elif request.user.groups.filter(name='Technical Supervisiors').exists():
+            applicant_cv.approved_by_tr = request.user
+        elif request.user.groups.filter(name='HR Group').exists():
+            applicant_cv.approved_by_hr = request.user
+        applicant_cv.save()
+    return HttpResponseRedirect(reverse('cv_panel'))

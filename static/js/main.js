@@ -259,10 +259,10 @@ $(document).on('click', '.del', function(){
   var id = $(this).attr('id');
   var cv = $(this).parent().parent();
   $.get(domainName+"/adminpanel/cv/"+id, function(data){
-    alert('deleted');
+    alert('CV Rejected');
     cv.remove();
   }).fail(function(){
-    alert('try again');
+    alert('CV Rejection Failed, Try Again.');
   });
 });
 
